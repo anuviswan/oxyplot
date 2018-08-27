@@ -66,6 +66,7 @@
     <Compile Include="Annotations\PolygonAnnotation.cs" />
     <Compile Include="Annotations\PolylineAnnotation.cs" />
     <Compile Include="Annotations\RectangleAnnotation.cs" />
+    <Compile Include="Annotations\RoundedRectangleAnnotation.cs" />
     <Compile Include="Annotations\ShapeAnnotation.cs" />
     <Compile Include="Annotations\TextAnnotation.cs" />
     <Compile Include="Annotations\LineAnnotation.cs" />
