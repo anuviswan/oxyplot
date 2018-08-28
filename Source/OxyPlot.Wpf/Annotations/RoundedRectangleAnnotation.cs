@@ -164,6 +164,7 @@ namespace OxyPlot.Wpf
             a.MaximumX = this.MaximumX;
             a.MinimumY = this.MinimumY;
             a.MaximumY = this.MaximumY;
+            a.CornerRadius = this.CornerRadius;
         }
     }
 }

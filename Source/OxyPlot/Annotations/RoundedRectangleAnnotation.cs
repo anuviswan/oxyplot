@@ -7,6 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace OxyPlot.Annotations
 {
     /// <summary>
@@ -17,7 +19,9 @@ namespace OxyPlot.Annotations
         /// <summary>
         /// The rectangle transformed to screen coordinates.
         /// </summary>
+        private OxyRect screenRectangle1;
         private OxyRect screenRectangle;
+        private OxyRect screenRectangle2;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RectangleAnnotation" /> class.
@@ -31,6 +35,7 @@ namespace OxyPlot.Annotations
             this.TextRotation = 0;
             this.ClipByXAxis = true;
             this.ClipByYAxis = true;
+            this.CornerRadius = 0;
         }
 
         /// <summary>
@@ -84,7 +89,144 @@ namespace OxyPlot.Annotations
         {
             base.Render(rc);
 
-            
+            if (CornerRadius == 0)
+            {
+                DrawRegularRectangle(rc);
+            }
+            else
+            {
+                DrawRoundedRectangle(rc);
+            }
+        }
+
+        private void DrawRoundedRectangle(IRenderContext rc)
+        {
+            double r1x0 = double.IsNaN(this.MinimumX) || this.MinimumX.Equals(double.MinValue)
+                            ? this.ClipByXAxis
+                                ? this.XAxis.ActualMinimum
+                                : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Left)
+                            : this.MinimumX;
+            double r1x1 = double.IsNaN(this.MaximumX) || this.MaximumX.Equals(double.MaxValue)
+                            ? this.ClipByXAxis
+                                ? this.XAxis.ActualMaximum
+                                : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Right)
+                            : this.MaximumX;
+            double r1y0 = double.IsNaN(this.MinimumY) || this.MinimumY.Equals(double.MinValue)
+                            ? this.ClipByYAxis
+                                ? this.YAxis.ActualMinimum
+                                : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Bottom)
+                            : this.MinimumY - CornerRadius;
+            double r1y1 = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
+                            ? this.ClipByYAxis
+                                ? this.YAxis.ActualMaximum
+                                : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Top)
+                            : this.MaximumY + CornerRadius;
+
+
+            double r2x0 = double.IsNaN(this.MinimumX) || this.MinimumX.Equals(double.MinValue)
+                            ? this.ClipByXAxis
+                                ? this.XAxis.ActualMinimum
+                                : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Left)
+                            : this.MinimumX - CornerRadius;
+            double r2x1 = double.IsNaN(this.MaximumX) || this.MaximumX.Equals(double.MaxValue)
+                            ? this.ClipByXAxis
+                                ? this.XAxis.ActualMaximum
+                                : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Right)
+                            : this.MaximumX + CornerRadius;
+            double r2y0 = double.IsNaN(this.MinimumY) || this.MinimumY.Equals(double.MinValue)
+                            ? this.ClipByYAxis
+                                ? this.YAxis.ActualMinimum
+                                : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Bottom)
+                            : this.MinimumY;
+            double r2y1 = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
+                            ? this.ClipByYAxis
+                                ? this.YAxis.ActualMaximum
+                                : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Top)
+                            : this.MaximumY;
+
+            this.screenRectangle1 = new OxyRect(this.Transform(r1x0, r1y0), this.Transform(r1x1, r1y1));
+            this.screenRectangle2 = new OxyRect(this.Transform(r2x0, r2y0), this.Transform(r2x1, r2y1));
+
+            // clip to the area defined by the axes
+            var clippingRectangle = OxyRect.Create(
+                this.ClipByXAxis ? this.XAxis.ScreenMin.X : this.PlotModel.PlotArea.Left,
+                this.ClipByYAxis ? this.YAxis.ScreenMin.Y : this.PlotModel.PlotArea.Top,
+                this.ClipByXAxis ? this.XAxis.ScreenMax.X : this.PlotModel.PlotArea.Right,
+                this.ClipByYAxis ? this.YAxis.ScreenMax.Y : this.PlotModel.PlotArea.Bottom);
+
+            rc.DrawClippedRectangle(
+                clippingRectangle,
+                this.screenRectangle1,
+                this.GetSelectableFillColor(this.Fill),
+                this.GetSelectableColor(this.Stroke),
+                this.StrokeThickness);
+
+            rc.DrawClippedRectangle(
+                clippingRectangle,
+                this.screenRectangle2,
+                this.GetSelectableFillColor(this.Fill),
+                this.GetSelectableColor(this.Stroke),
+                this.StrokeThickness);
+
+            //rc.DrawCircle(this.Transform(r1x0, r1y0 + CornerRadius), CornerRadius, OxyColors.Transparent, OxyColors.Black, StrokeThickness = 2);
+        }
+
+        private void DrawRegularRectangle(IRenderContext rc)
+        {
+            double x0 = double.IsNaN(this.MinimumX) || this.MinimumX.Equals(double.MinValue)
+                            ? this.ClipByXAxis
+                                ? this.XAxis.ActualMinimum
+                                : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Left)
+                            : this.MinimumX;
+            double x1 = double.IsNaN(this.MaximumX) || this.MaximumX.Equals(double.MaxValue)
+                            ? this.ClipByXAxis
+                                ? this.XAxis.ActualMaximum
+                                : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Right)
+                            : this.MaximumX;
+            double y0 = double.IsNaN(this.MinimumY) || this.MinimumY.Equals(double.MinValue)
+                            ? this.ClipByYAxis
+                                ? this.YAxis.ActualMinimum
+                                : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Bottom)
+                            : this.MinimumY;
+            double y1 = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
+                            ? this.ClipByYAxis
+                                ? this.YAxis.ActualMaximum
+                                : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Top)
+                            : this.MaximumY;
+
+            this.screenRectangle = new OxyRect(this.Transform(x0, y0), this.Transform(x1, y1));
+
+            // clip to the area defined by the axes
+            var clippingRectangle = OxyRect.Create(
+                this.ClipByXAxis ? this.XAxis.ScreenMin.X : this.PlotModel.PlotArea.Left,
+                this.ClipByYAxis ? this.YAxis.ScreenMin.Y : this.PlotModel.PlotArea.Top,
+                this.ClipByXAxis ? this.XAxis.ScreenMax.X : this.PlotModel.PlotArea.Right,
+                this.ClipByYAxis ? this.YAxis.ScreenMax.Y : this.PlotModel.PlotArea.Bottom);
+
+            rc.DrawClippedRectangle(
+                clippingRectangle,
+                this.screenRectangle,
+                this.GetSelectableFillColor(this.Fill),
+                this.GetSelectableColor(this.Stroke),
+                this.StrokeThickness);
+
+
+
+            if (!string.IsNullOrEmpty(this.Text))
+            {
+                var textPosition = this.GetActualTextPosition(() => this.screenRectangle.Center);
+                rc.DrawClippedText(
+                    clippingRectangle,
+                    textPosition,
+                    this.Text,
+                    this.ActualTextColor,
+                    this.ActualFont,
+                    this.ActualFontSize,
+                    this.ActualFontWeight,
+                    this.TextRotation,
+                    HorizontalAlignment.Center,
+                    VerticalAlignment.Middle);
+            }
         }
 
         /// <summary>

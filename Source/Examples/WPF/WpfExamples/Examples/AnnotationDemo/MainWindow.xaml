@@ -115,8 +115,8 @@
                     <oxy:LinearAxis Position="Left" Minimum="0" Maximum="100" />
                 </oxy:Plot.Axes>
                 <oxy:Plot.Annotations>
-                    <oxy:RoundedRectangleAnnotation Fill="IndianRed" Text="Rectangle 1" MinimumX="10" MinimumY="10" MaximumX="60" MaximumY="40" CornerRadius="5" />
-                    <oxy:RoundedRectangleAnnotation Fill="#40004684" Text="Rectangle 2" MinimumX="20" MinimumY="30" MaximumX="50" MaximumY="60"/>
+                    <oxy:RoundedRectangleAnnotation Fill="Transparent" StrokeThickness="2" Stroke="Black" Text="Rectangle 1" MinimumX="10" MinimumY="10" MaximumX="60" MaximumY="40" CornerRadius="5" />
+                    <!--<oxy:RoundedRectangleAnnotation Fill="Transparent" StrokeThickness="2" Stroke="AliceBlue" Text="Rectangle 2" MinimumX="10" MinimumY="10" MaximumX="60" MaximumY="40"/>-->
                 </oxy:Plot.Annotations>
             </oxy:Plot>
         </TabItem>
