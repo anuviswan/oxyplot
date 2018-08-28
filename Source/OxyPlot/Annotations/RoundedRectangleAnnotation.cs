@@ -101,51 +101,32 @@ namespace OxyPlot.Annotations
 
         private void DrawRoundedRectangle(IRenderContext rc)
         {
-            double r1x0 = double.IsNaN(this.MinimumX) || this.MinimumX.Equals(double.MinValue)
+            double xMin = double.IsNaN(this.MinimumX) || this.MinimumX.Equals(double.MinValue)
                             ? this.ClipByXAxis
                                 ? this.XAxis.ActualMinimum
                                 : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Left)
                             : this.MinimumX;
-            double r1x1 = double.IsNaN(this.MaximumX) || this.MaximumX.Equals(double.MaxValue)
+            double xMax = double.IsNaN(this.MaximumX) || this.MaximumX.Equals(double.MaxValue)
                             ? this.ClipByXAxis
                                 ? this.XAxis.ActualMaximum
                                 : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Right)
                             : this.MaximumX;
-            double r1y0 = double.IsNaN(this.MinimumY) || this.MinimumY.Equals(double.MinValue)
+            double yMin = double.IsNaN(this.MinimumY) || this.MinimumY.Equals(double.MinValue)
                             ? this.ClipByYAxis
                                 ? this.YAxis.ActualMinimum
                                 : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Bottom)
                             : this.MinimumY - CornerRadius;
-            double r1y1 = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
+            double yMax = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
                             ? this.ClipByYAxis
                                 ? this.YAxis.ActualMaximum
                                 : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Top)
                             : this.MaximumY + CornerRadius;
 
 
-            double r2x0 = double.IsNaN(this.MinimumX) || this.MinimumX.Equals(double.MinValue)
-                            ? this.ClipByXAxis
-                                ? this.XAxis.ActualMinimum
-                                : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Left)
-                            : this.MinimumX - CornerRadius;
-            double r2x1 = double.IsNaN(this.MaximumX) || this.MaximumX.Equals(double.MaxValue)
-                            ? this.ClipByXAxis
-                                ? this.XAxis.ActualMaximum
-                                : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Right)
-                            : this.MaximumX + CornerRadius;
-            double r2y0 = double.IsNaN(this.MinimumY) || this.MinimumY.Equals(double.MinValue)
-                            ? this.ClipByYAxis
-                                ? this.YAxis.ActualMinimum
-                                : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Bottom)
-                            : this.MinimumY;
-            double r2y1 = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
-                            ? this.ClipByYAxis
-                                ? this.YAxis.ActualMaximum
-                                : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Top)
-                            : this.MaximumY;
 
-            this.screenRectangle1 = new OxyRect(this.Transform(r1x0, r1y0), this.Transform(r1x1, r1y1));
-            this.screenRectangle2 = new OxyRect(this.Transform(r2x0, r2y0), this.Transform(r2x1, r2y1));
+            rc.DrawCircle(this.Transform(xMin,yMin), CornerRadius, OxyColors.Transparent, OxyColors.Black, StrokeThickness = 2);
+
+            this.screenRectangle1 = new OxyRect(this.Transform(xMin, yMin), this.Transform(xMax, yMax));
 
             // clip to the area defined by the axes
             var clippingRectangle = OxyRect.Create(
@@ -161,13 +142,7 @@ namespace OxyPlot.Annotations
                 this.GetSelectableColor(this.Stroke),
                 this.StrokeThickness);
 
-            rc.DrawClippedRectangle(
-                clippingRectangle,
-                this.screenRectangle2,
-                this.GetSelectableFillColor(this.Fill),
-                this.GetSelectableColor(this.Stroke),
-                this.StrokeThickness);
-
+            
             //rc.DrawCircle(this.Transform(r1x0, r1y0 + CornerRadius), CornerRadius, OxyColors.Transparent, OxyColors.Black, StrokeThickness = 2);
         }
 
