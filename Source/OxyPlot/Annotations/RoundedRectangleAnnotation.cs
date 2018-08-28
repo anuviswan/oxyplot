@@ -174,7 +174,6 @@ namespace OxyPlot.Annotations
                                 this.GetSelectableFillColor(this.Fill),
                                 this.GetSelectableColor(this.Stroke),
                                 this.StrokeThickness);
-            //rc.DrawCircle(this.Transform(r1x0, r1y0 + CornerRadius), CornerRadius, OxyColors.Transparent, OxyColors.Black, StrokeThickness = 2);
         }
 
         private void DrawRegularRectangle(IRenderContext rc)
