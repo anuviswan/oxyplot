@@ -19,9 +19,14 @@ namespace OxyPlot.Annotations
         /// <summary>
         /// The rectangle transformed to screen coordinates.
         /// </summary>
-        private OxyRect screenRectangle1;
         private OxyRect screenRectangle;
+        private OxyRect screenRectangle1;
         private OxyRect screenRectangle2;
+
+        private OxyRect screenEllipse1;
+        private OxyRect screenEllipse2;
+        private OxyRect screenEllipse3;
+        private OxyRect screenEllipse4;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RectangleAnnotation" /> class.
@@ -115,18 +120,22 @@ namespace OxyPlot.Annotations
                             ? this.ClipByYAxis
                                 ? this.YAxis.ActualMinimum
                                 : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Bottom)
-                            : this.MinimumY - CornerRadius;
+                            : this.MinimumY;
             double yMax = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
                             ? this.ClipByYAxis
                                 ? this.YAxis.ActualMaximum
                                 : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Top)
-                            : this.MaximumY + CornerRadius;
+                            : this.MaximumY;
 
+            
 
+            this.screenRectangle1 = new OxyRect(this.Transform(xMin, yMin+CornerRadius), this.Transform(xMax, yMax-CornerRadius));
+            this.screenRectangle2 = new OxyRect(this.Transform(xMin + CornerRadius, yMin), this.Transform(xMax - CornerRadius, yMax ));
 
-            rc.DrawCircle(this.Transform(xMin,yMin), CornerRadius, OxyColors.Transparent, OxyColors.Black, StrokeThickness = 2);
-
-            this.screenRectangle1 = new OxyRect(this.Transform(xMin, yMin), this.Transform(xMax, yMax));
+            this.screenEllipse1 = new OxyRect(this.Transform(xMin, yMin), this.Transform(xMin + 2* CornerRadius, yMin + 2* CornerRadius));
+            this.screenEllipse2 = new OxyRect(this.Transform(xMin, yMax), this.Transform(xMin + 2 * CornerRadius, yMax - 2 * CornerRadius));
+            this.screenEllipse3 = new OxyRect(this.Transform(xMax, yMin), this.Transform(xMax - 2 * CornerRadius, yMin + 2 * CornerRadius));
+            this.screenEllipse4 = new OxyRect(this.Transform(xMax, yMax), this.Transform(xMax - 2 * CornerRadius, yMax - 2 * CornerRadius));
 
             // clip to the area defined by the axes
             var clippingRectangle = OxyRect.Create(
@@ -135,14 +144,36 @@ namespace OxyPlot.Annotations
                 this.ClipByXAxis ? this.XAxis.ScreenMax.X : this.PlotModel.PlotArea.Right,
                 this.ClipByYAxis ? this.YAxis.ScreenMax.Y : this.PlotModel.PlotArea.Bottom);
 
-            rc.DrawClippedRectangle(
-                clippingRectangle,
-                this.screenRectangle1,
-                this.GetSelectableFillColor(this.Fill),
-                this.GetSelectableColor(this.Stroke),
-                this.StrokeThickness);
+            rc.DrawClippedRectangle(clippingRectangle,this.screenRectangle1,
+                                            this.GetSelectableFillColor(this.Fill),
+                                            this.GetSelectableColor(this.Stroke),
+                                            this.StrokeThickness);
 
-            
+            rc.DrawClippedRectangle(clippingRectangle, this.screenRectangle2,
+                                            this.GetSelectableFillColor(this.Fill),
+                                            this.GetSelectableColor(this.Stroke),
+                                            this.StrokeThickness);
+
+
+            rc.DrawClippedEllipse(clippingRectangle, screenEllipse1, 
+                                            this.GetSelectableFillColor(this.Fill), 
+                                            this.GetSelectableColor(this.Stroke),
+                                            this.StrokeThickness);
+
+            rc.DrawClippedEllipse(clippingRectangle, screenEllipse2,
+                                this.GetSelectableFillColor(this.Fill),
+                                this.GetSelectableColor(this.Stroke),
+                                this.StrokeThickness);
+
+            rc.DrawClippedEllipse(clippingRectangle, screenEllipse3,
+                                this.GetSelectableFillColor(this.Fill),
+                                this.GetSelectableColor(this.Stroke),
+                                this.StrokeThickness);
+
+            rc.DrawClippedEllipse(clippingRectangle, screenEllipse4,
+                                this.GetSelectableFillColor(this.Fill),
+                                this.GetSelectableColor(this.Stroke),
+                                this.StrokeThickness);
             //rc.DrawCircle(this.Transform(r1x0, r1y0 + CornerRadius), CornerRadius, OxyColors.Transparent, OxyColors.Black, StrokeThickness = 2);
         }
 
