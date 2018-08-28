@@ -95,13 +95,9 @@ namespace OxyPlot.Annotations
             base.Render(rc);
 
             if (CornerRadius == 0)
-            {
                 DrawRegularRectangle(rc);
-            }
             else
-            {
                 DrawRoundedRectangle(rc);
-            }
         }
 
         private void DrawRoundedRectangle(IRenderContext rc)
