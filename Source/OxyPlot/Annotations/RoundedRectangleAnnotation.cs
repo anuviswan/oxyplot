@@ -175,7 +175,22 @@ namespace OxyPlot.Annotations
                                 this.GetSelectableColor(this.Stroke),
                                 this.StrokeThickness);
 
-            
+
+            if (!string.IsNullOrEmpty(this.Text))
+            {
+                var textPosition = this.GetActualTextPosition(() => this.screenRectangle.Center);
+                rc.DrawClippedText(
+                    clippingRectangle,
+                    textPosition,
+                    this.Text,
+                    this.ActualTextColor,
+                    this.ActualFont,
+                    this.ActualFontSize,
+                    this.ActualFontWeight,
+                    this.TextRotation,
+                    HorizontalAlignment.Center,
+                    VerticalAlignment.Middle);
+            }
         }
 
         private void DrawRegularRectangle(IRenderContext rc)
