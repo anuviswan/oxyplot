@@ -102,36 +102,37 @@ namespace OxyPlot.Annotations
 
         private void DrawRoundedRectangle(IRenderContext rc)
         {
-            double xMin = double.IsNaN(this.MinimumX) || this.MinimumX.Equals(double.MinValue)
+            var xMin = double.IsNaN(this.MinimumX) || this.MinimumX.Equals(double.MinValue)
                             ? this.ClipByXAxis
                                 ? this.XAxis.ActualMinimum
                                 : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Left)
                             : this.MinimumX;
-            double xMax = double.IsNaN(this.MaximumX) || this.MaximumX.Equals(double.MaxValue)
+            var xMax = double.IsNaN(this.MaximumX) || this.MaximumX.Equals(double.MaxValue)
                             ? this.ClipByXAxis
                                 ? this.XAxis.ActualMaximum
                                 : this.XAxis.InverseTransform(this.PlotModel.PlotArea.Right)
                             : this.MaximumX;
-            double yMin = double.IsNaN(this.MinimumY) || this.MinimumY.Equals(double.MinValue)
+            var yMin = double.IsNaN(this.MinimumY) || this.MinimumY.Equals(double.MinValue)
                             ? this.ClipByYAxis
                                 ? this.YAxis.ActualMinimum
                                 : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Bottom)
                             : this.MinimumY;
-            double yMax = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
+            var yMax = double.IsNaN(this.MaximumY) || this.MaximumY.Equals(double.MaxValue)
                             ? this.ClipByYAxis
                                 ? this.YAxis.ActualMaximum
                                 : this.YAxis.InverseTransform(this.PlotModel.PlotArea.Top)
                             : this.MaximumY;
 
-            
+            var xCornerRadius = (CornerRadius / (XAxis.Maximum - XAxis.Minimum)) * 100;
+            var yCornerRadius = (CornerRadius / (YAxis.Maximum - YAxis.Minimum)) * 100;
 
-            this.screenRectangleWithClippedXAxis = new OxyRect(this.Transform(xMin + CornerRadius, yMin), this.Transform(xMax - CornerRadius, yMax));
-            this.screenRectangleWithClippedYAxis = new OxyRect(this.Transform(xMin, yMin + CornerRadius), this.Transform(xMax, yMax - CornerRadius));
+            this.screenRectangleWithClippedXAxis = new OxyRect(this.Transform(xMin + xCornerRadius, yMin), this.Transform(xMax - xCornerRadius, yMax));
+            this.screenRectangleWithClippedYAxis = new OxyRect(this.Transform(xMin, yMin + yCornerRadius), this.Transform(xMax, yMax - yCornerRadius));
 
-            this.screenEllipseLeftBottom = new OxyRect(this.Transform(xMin, yMin), this.Transform(xMin + 2* CornerRadius, yMin + 2* CornerRadius));
-            this.screenEllipseLeftTop = new OxyRect(this.Transform(xMin, yMax), this.Transform(xMin + 2 * CornerRadius, yMax - 2 * CornerRadius));
-            this.screenEllipseRightBottom = new OxyRect(this.Transform(xMax, yMin), this.Transform(xMax - 2 * CornerRadius, yMin + 2 * CornerRadius));
-            this.screenEllipseRightTop = new OxyRect(this.Transform(xMax, yMax), this.Transform(xMax - 2 * CornerRadius, yMax - 2 * CornerRadius));
+            this.screenEllipseLeftBottom = new OxyRect(this.Transform(xMin, yMin), this.Transform(xMin + 2* xCornerRadius, yMin + 2* yCornerRadius));
+            this.screenEllipseLeftTop = new OxyRect(this.Transform(xMin, yMax), this.Transform(xMin + 2 * xCornerRadius, yMax - 2 * yCornerRadius));
+            this.screenEllipseRightBottom = new OxyRect(this.Transform(xMax, yMin), this.Transform(xMax - 2 * xCornerRadius, yMin + 2 * yCornerRadius));
+            this.screenEllipseRightTop = new OxyRect(this.Transform(xMax, yMax), this.Transform(xMax - 2 * xCornerRadius, yMax - 2 * yCornerRadius));
 
             // clip to the area defined by the axes
             var clippingRectangle = OxyRect.Create(
