@@ -29,7 +29,7 @@ namespace OxyPlot.Annotations
         private OxyRect screenEllipseRightTop;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RectangleAnnotation" /> class.
+        /// Initializes a new instance of the <see cref="RoundedRectangleAnnotation" /> class.
         /// </summary>
         public RoundedRectangleAnnotation()
         {
